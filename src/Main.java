@@ -57,7 +57,10 @@ public class Main {
 			else if(userInput == 6) {
 				generateReport(url, uid, pw);
 			}
-			else if(userInput == 7) {
+			else if (userInput == 7) {
+				System.out.println("translation feature in progress");
+			}
+			else if(userInput == 8) {
 				loggedIn = 0; // Log out
 				System.out.println("\nLogged out.");
 				continue;
@@ -112,14 +115,15 @@ public class Main {
 			System.out.println("5. Display inventory");
 			//System.out.println("6. Change user information"); // To be implemented
 			System.out.println("6. Generate report");
-			System.out.println("7. Log out");
-			System.out.println("8. Shut down");
-			System.out.print("\nEnter 1 - 8: ");
+			System.out.println("7. See this menu in French");
+			System.out.println("8. Log out");
+			System.out.println("9. Shut down");
+			System.out.print("\nEnter 1 - 9: ");
 			
 			int input = s.nextInt();
 			s.nextLine();// Capture the \n from user hitting enter
 			
-			if(input >= 1 & input <= 8) { // May need to do more user input verification
+			if(input >= 1 & input <= 9) { // May need to do more user input verification
 				return input;
 			}
 			else {
