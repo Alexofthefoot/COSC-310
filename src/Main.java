@@ -28,13 +28,13 @@ public class Main {
 		
 		while(true) {
 			// MAIN PROGRAM LOOP
-			
+			boolean translated = false;
 			if(loggedIn == 0) {
 				loggedIn = logIn(url, uid, pw); // Varying user level. 0 is not logged in, 1 is admin, 2 is employee, and so on
 			}
 			
 			// check user level here, display different menu for different level
-			int userInput = menu();
+			int userInput = menu(false);
 			
 			if(userInput == 1) {
 				addItem(url, uid, pw);
@@ -59,6 +59,7 @@ public class Main {
 			}
 			else if (userInput == 7) {
 				System.out.println("translation feature in progress");
+				translated = true;
 			}
 			else if(userInput == 8) {
 				loggedIn = 0; // Log out
@@ -103,10 +104,9 @@ public class Main {
 		
 	}
 	
-	public static int menu() {
+	public static int menu(boolean isEnglish) {
 			
 		while(true) {
-			
 			System.out.println("\n--------------------------------------------------\n");
 			System.out.println("1. Add a new item to inventory");
 			System.out.println("2. Increase amount of existing item");
