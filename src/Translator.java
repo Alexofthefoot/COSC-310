@@ -1,4 +1,4 @@
-package cafekeeper;
+import javax.sound.midi.SysexMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +13,9 @@ public class Translator {
 //        //Translated text: Hallo Welt!
 //        System.out.println("Translated text: " + translate("en", "de", text));
 //    }
+    public static void translatedPrint(String text, String lang) throws IOException {
+        System.out.println(translate("en", lang, text));
+    }
 
     private static String translate(String langFrom, String langTo, String text) throws IOException {
         // INSERT YOU URL HERE

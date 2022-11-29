@@ -1,10 +1,24 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-	
+	static String currentLanguage = "en";
 	static Scanner s = new Scanner(System.in);
+	private static String[] menuOptions = new String[] {"\n--------------------------------------------------\n",
+			"1. Add a new item to inventory",
+			"2. Increase amount of existing item",
+			"3. Decrease amount of existing item",
+			"4. Remove item from inventory",
+			"5. Display inventory",
+			"6. Generate report",
+			"7. See this menu in another language",
+			"8. Log out",
+			"9. Shut down",
+			"10. Reset to English",
+			"Enter 1 - 10: "
+	};
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		System.out.println("Welcome");
 		
@@ -19,7 +33,7 @@ public class Main {
 		
 		User temp = SQL.selectUser(url, uid, pw, "admin");
 		if(temp.getUsername() == null) {
-			System.out.println("\n-----Intial setup-----\nCreating defualt user: admin, please refer to software documentation for password.");
+			System.out.println("\n-----Intial setup-----\nCreating default user: admin, please refer to software documentation for password.");
 			User tempUser = new User("admin", "123456", 1);
 			SQL.insertUser(url, uid, pw, tempUser);
 		}
@@ -28,13 +42,12 @@ public class Main {
 		
 		while(true) {
 			// MAIN PROGRAM LOOP
-			boolean translated = false;
 			if(loggedIn == 0) {
 				loggedIn = logIn(url, uid, pw); // Varying user level. 0 is not logged in, 1 is admin, 2 is employee, and so on
 			}
 			
 			// check user level here, display different menu for different level
-			int userInput = menu(false);
+			int userInput = menu();
 			
 			if(userInput == 1) {
 				addItem(url, uid, pw);
@@ -58,17 +71,19 @@ public class Main {
 				generateReport(url, uid, pw);
 			}
 			else if (userInput == 7) {
-				System.out.println("translation feature in progress");
-				translated = true;
+				changeLanguage();
 			}
 			else if(userInput == 8) {
 				loggedIn = 0; // Log out
 				System.out.println("\nLogged out.");
 				continue;
 			}
-			else {
-				System.out.println("\nGoodbye"); 
+			else if(userInput == 9) {
+				System.out.println("\nGoodbye");
 				break; // Exit
+			}
+			else {
+				currentLanguage = "en";
 			}
 			// TO DO: expand option 5 into sub menu
 			// TO DO: option to DROP table and database
@@ -104,26 +119,23 @@ public class Main {
 		
 	}
 	
-	public static int menu(boolean isEnglish) {
+	public static int menu() throws IOException {
 			
 		while(true) {
-			System.out.println("\n--------------------------------------------------\n");
-			System.out.println("1. Add a new item to inventory");
-			System.out.println("2. Increase amount of existing item");
-			System.out.println("3. Decrease amount of existing item");
-			System.out.println("4. Remove item from inventory");
-			System.out.println("5. Display inventory");
-			//System.out.println("6. Change user information"); // To be implemented
-			System.out.println("6. Generate report");
-			System.out.println("7. See this menu in French");
-			System.out.println("8. Log out");
-			System.out.println("9. Shut down");
-			System.out.print("\nEnter 1 - 9: ");
-			
+			//Print out menuOptions
+			for (int i = 0; i < menuOptions.length; i++){
+				if (currentLanguage.compareTo("en") == 0) {
+					System.out.println(menuOptions[i]);
+				}
+				else {
+					Translator.translatedPrint(menuOptions[i], currentLanguage);
+				}
+			}
+
 			int input = s.nextInt();
 			s.nextLine();// Capture the \n from user hitting enter
 			
-			if(input >= 1 & input <= 9) { // May need to do more user input verification
+			if(input >= 1 & input <= 10) { // May need to do more user input verification
 				return input;
 			}
 			else {
@@ -162,7 +174,7 @@ public class Main {
 		}
 		
 	}
-	
+
 	public static void addItem(String url, String uid, String pw) {
 		
 		System.out.println("\nEnter item info");
@@ -242,6 +254,32 @@ public class Main {
 //
 //		document.add(chunk);
 //		document.close();
+	}
+
+	public static void changeLanguage() throws IOException {
+
+		while (true) {
+			System.out.println("Implementation in Progress");
+			System.out.println(menuOptions[0]);
+			System.out.println("'en': English");
+			System.out.println("'fr': French");
+			System.out.println("'es': Spanish");
+			System.out.println("'de': German");
+			System.out.println(menuOptions[0]);
+			String input = s.next();
+			s.nextLine();// Capture the \n from user hitting enter
+
+			if(input.compareTo("en") == 0 || input.compareTo("fr") == 0 ||
+					input.compareTo("de") == 0 || input.compareTo("es") == 0)
+			{
+				currentLanguage = input;
+				return;
+			}
+			else {
+				System.out.println("Incorrect input. Please try again.");
+			}
+
+		}
 	}
 	
 }
