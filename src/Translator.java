@@ -18,14 +18,13 @@ public class Translator {
     }
 
     private static String translate(String langFrom, String langTo, String text) throws IOException {
-        // INSERT YOU URL HERE
         String urlStr = "https://script.google.com/macros/s/AKfycbxxRGfM5n1KoXT-d-jI8GELVdw_AN-ucMww2oxdomue9dCR-VOmlnYRKpFCIjTZZ6ABPw/exec" +
                 "?q=" + URLEncoder.encode(text, "UTF-8") +
                 "&target=" + langTo +
                 "&source=" + langFrom;
-        URL url = new URL(urlStr);
+        URL myurl = new URL(urlStr);
         StringBuilder response = new StringBuilder();
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        HttpURLConnection con = (HttpURLConnection) myurl.openConnection();
         con.setRequestProperty("User-Agent", "Mozilla/5.0");
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;

@@ -1,8 +1,16 @@
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-	static String currentLanguage = "en";
+	private static String currentLanguage = "en";
 	static Scanner s = new Scanner(System.in);
 	private static String[] menuOptions = new String[] {"\n--------------------------------------------------\n",
 			"1. Add a new item to inventory",
@@ -15,8 +23,11 @@ public class Main {
 			"8. Log out",
 			"9. Shut down",
 			"10. Reset to English",
-			"Enter 1 - 10: "
+			"11. New Feature",
+			"Enter 1 - 11: "
 	};
+	private static ArrayList<String> userActions = new ArrayList<>();
+
 
 	public static void main(String[] args) throws IOException {
 		
@@ -36,6 +47,9 @@ public class Main {
 			System.out.println("\n-----Intial setup-----\nCreating default user: admin, please refer to software documentation for password.");
 			User tempUser = new User("admin", "123456", 1);
 			SQL.insertUser(url, uid, pw, tempUser);
+			//add login info to userActions
+			String userInfo = tempUser.getUsername();
+			userActions.add("Report of actions taken by: " + userInfo + ". Security level: " + tempUser.getLevel());
 		}
 		
 		
@@ -82,11 +96,12 @@ public class Main {
 				System.out.println("\nGoodbye");
 				break; // Exit
 			}
-			else {
+			else if (userInput == 10){
 				currentLanguage = "en";
 			}
-			// TO DO: expand option 5 into sub menu
-			// TO DO: option to DROP table and database
+			else {
+				System.out.println("Function in progress");
+			}
 		}
 
 	}
@@ -123,9 +138,14 @@ public class Main {
 			
 		while(true) {
 			//Print out menuOptions
-			for (int i = 0; i < menuOptions.length; i++){
+			for (int i = 0; i < menuOptions.length - 1; i++){
 				if (currentLanguage.compareTo("en") == 0) {
-					System.out.println(menuOptions[i]);
+					if (i == menuOptions.length-1) {
+						System.out.print(menuOptions[i]);
+					}
+					else {
+						System.out.println(menuOptions[i]);
+					}
 				}
 				else {
 					Translator.translatedPrint(menuOptions[i], currentLanguage);
@@ -135,7 +155,7 @@ public class Main {
 			int input = s.nextInt();
 			s.nextLine();// Capture the \n from user hitting enter
 			
-			if(input >= 1 & input <= 10) { // May need to do more user input verification
+			if(input >= 1 & input <= 11) { // May need to do more user input verification
 				return input;
 			}
 			else {
@@ -185,13 +205,16 @@ public class Main {
 		s.nextLine();// Capture the \n from user hitting enter
 		System.out.print("Enter unit: ");
 		String unit = s.nextLine(); // TO DO: check string length
-		
 		Item item = new Item(itemname, amount, unit);
-		
+
+		//Save user action for report functionality
+		String userAction = "Added: " + amount + " " + unit + " of " + itemname + " to database";
+		userActions.add(userAction);
+
 		SQL.insertInventory(url, uid, pw, item);
 		
 	}
-	
+
 	public static void incrItem(String url, String uid, String pw) {
 		
 		System.out.println("\nEnter item info");
@@ -202,11 +225,14 @@ public class Main {
 		
 		Item fromDB = SQL.selectInventory(url, uid, pw, itemname);
 		double amountFromDB = fromDB.getAmount();
-		amount = amount + amountFromDB;
-		SQL.updateInventory(url, uid, pw, fromDB.getItemname(), "amount", amount + ""); // TO DO: better way to turn double into string, or find a way to use double
-		
+		Double newAmount = amount + amountFromDB;
+		SQL.updateInventory(url, uid, pw, fromDB.getItemname(), "amount", newAmount + ""); // TO DO: better way to turn double into string, or find a way to use double
+
+		//Save user action for report functionality
+		String userAction = "Increased: " + itemname + " by " + amount + ". Updated amount: " + newAmount;
+		userActions.add(userAction);
 	}
-	
+
 	public static void decrItem(String url, String uid, String pw) {
 		
 		System.out.println("\nEnter item info");
@@ -221,17 +247,22 @@ public class Main {
 			System.out.println("Cannot have negative inventory. Item quantity has not been updated");
 		}
 		else {
-			amount = amountFromDB - amount;
-			SQL.updateInventory(url, uid, pw, fromDB.getItemname(), "amount", amount + ""); // TO DO: better way to turn double into string, or find a way to use double
+			Double newAmount = amountFromDB - amount;
+			SQL.updateInventory(url, uid, pw, fromDB.getItemname(), "amount", newAmount + ""); // TO DO: better way to turn double into string, or find a way to use double
+
+			//Save user action for report functionality
+			String userAction = "Decreased: " + itemname + " by " + amount + ". Updated amount: " + newAmount;
+			userActions.add(userAction);
 		}
 	}
-	
+
 	public static void removeItem(String url, String uid, String pw) {
 		
 		System.out.print("Enter item name: "); // TO DO: check if exists, right now possible crash if item does not exist
 		String itemname = s.nextLine();
 		SQL.deleteInventory(url,  uid, pw, itemname);
-		
+
+		String userAction = "Removed: " + itemname + " from database.";
 	}
 	
 	public static void displayInventory(String url, String uid, String pw) {
@@ -244,16 +275,38 @@ public class Main {
 	}
 	
 	public static void generateReport(String url, String uid, String pw) {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MMM/dd");
+		LocalDateTime now = LocalDateTime.now();
+		String date = dateChangeFormat(dtf.format(now));//remove slashes so that date can be used in filename
+
+
 		System.out.println("Implementation in progress.");
-//		Document document = new Document();
-//		PdfWriter.getInstance(document, new FileOutputStream("sampleReport.pdf"));
-//
-//		document.open();
-//		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-//		Chunk chunk = new Chunk("Hello World", font);
-//
-//		document.add(chunk);
-//		document.close();
+		try {
+			//filename includes current date
+			String filename = "report" + date + ".pdf";
+			System.out.println("creating file called: " + filename);
+
+			Document doc = new Document();
+			PdfWriter.getInstance(doc, new FileOutputStream(filename));
+			doc.open();
+			Paragraph p = new Paragraph("Report for date: " + date);
+			doc.add(p);
+			//iterate through userActions, printing each on a new line.
+			for (int i = 0; i < userActions.size(); i++) {
+				p = new Paragraph(userActions.get(i));
+				doc.add(p);
+			}
+
+			doc.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	private static String dateChangeFormat(String str) {
+		//remove slashes so that the filename can be saved as Report_Jan03.pdf format"
+		String[] arr = str.split("/");
+		arr[1] = arr[1].substring(0,3);
+		return arr[1] + arr[2];
 	}
 
 	public static void changeLanguage() throws IOException {
