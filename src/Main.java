@@ -19,12 +19,10 @@ public class Main {
 			"4. Remove item from inventory",
 			"5. Display inventory",
 			"6. Generate report",
-			"7. See this menu in another language",
+			"7. Change menu language",
 			"8. Log out",
 			"9. Shut down",
-			"10. Reset to English",
-			"11. New Feature",
-			"Enter 1 - 11: "
+			"Enter 1 - 9: "
 	};
 	private static ArrayList<String> userActions = new ArrayList<>();
 
@@ -92,15 +90,9 @@ public class Main {
 				System.out.println("\nLogged out.");
 				continue;
 			}
-			else if(userInput == 9) {
+			else {
 				System.out.println("\nGoodbye");
 				break; // Exit
-			}
-			else if (userInput == 10){
-				currentLanguage = "en";
-			}
-			else {
-				System.out.println("Function in progress");
 			}
 		}
 
@@ -138,7 +130,7 @@ public class Main {
 			
 		while(true) {
 			//Print out menuOptions
-			for (int i = 0; i < menuOptions.length - 1; i++){
+			for (int i = 0; i < menuOptions.length; i++){
 				if (currentLanguage.compareTo("en") == 0) {
 					if (i == menuOptions.length-1) {
 						System.out.print(menuOptions[i]);
@@ -155,7 +147,7 @@ public class Main {
 			int input = s.nextInt();
 			s.nextLine();// Capture the \n from user hitting enter
 			
-			if(input >= 1 & input <= 11) { // May need to do more user input verification
+			if(input >= 1 & input <= 9) { // May need to do more user input verification
 				return input;
 			}
 			else {
@@ -302,6 +294,7 @@ public class Main {
 			System.out.println(e);
 		}
 	}
+
 	private static String dateChangeFormat(String str) {
 		//remove slashes so that the filename can be saved as Report_Jan03.pdf format"
 		String[] arr = str.split("/");
@@ -312,17 +305,25 @@ public class Main {
 	public static void changeLanguage() throws IOException {
 
 		while (true) {
-			System.out.println("Implementation in Progress");
 			System.out.println(menuOptions[0]);
 			System.out.println("'en': English");
-			System.out.println("'fr': French");
-			System.out.println("'es': Spanish");
-			System.out.println("'de': German");
-			System.out.println(menuOptions[0]);
+			System.out.print("'it': ");
+			Translator.translatedPrint("Italian", "it");
+			System.out.print("'es': ");
+			Translator.translatedPrint("Spanish", "es");
+			System.out.print("'de': ");
+			Translator.translatedPrint("German", "de");
+
+			if (currentLanguage.compareTo("en") == 0) {
+				System.out.print("\nYour choice: ");
+			}
+			else {
+				System.out.print(Translator.translate("en", currentLanguage, "Your choice: "));
+			}
 			String input = s.next();
 			s.nextLine();// Capture the \n from user hitting enter
 
-			if(input.compareTo("en") == 0 || input.compareTo("fr") == 0 ||
+			if(input.compareTo("en") == 0 || input.compareTo("it") == 0 ||
 					input.compareTo("de") == 0 || input.compareTo("es") == 0)
 			{
 				currentLanguage = input;
