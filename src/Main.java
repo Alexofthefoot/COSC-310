@@ -41,14 +41,17 @@ public class Main {
 		int loggedIn = 0;
 		
 		User temp = SQL.selectUser(url, uid, pw, "admin");
+		String userInfo = temp.getUsername();
+
 		if(temp.getUsername() == null) {
 			System.out.println("\n-----Intial setup-----\nCreating default user: admin, please refer to software documentation for password.");
 			User tempUser = new User("admin", "123456", 1);
 			SQL.insertUser(url, uid, pw, tempUser);
 			//add login info to userActions
-			String userInfo = tempUser.getUsername();
-			userActions.add("Report of actions taken by: " + userInfo + ". Security level: " + tempUser.getLevel());
+			userInfo = tempUser.getUsername();
 		}
+		//Add user's info to top of report
+		userActions.add("Report of actions taken by: " + userInfo + "\n--------------------------------------------");
 		
 		
 		
@@ -275,13 +278,13 @@ public class Main {
 		System.out.println("Implementation in progress.");
 		try {
 			//filename includes current date
-			String filename = "report" + date + ".pdf";
+			String filename = "Report" + date + ".pdf";
 			System.out.println("creating file called: " + filename);
 
 			Document doc = new Document();
 			PdfWriter.getInstance(doc, new FileOutputStream(filename));
 			doc.open();
-			Paragraph p = new Paragraph("Report for date: " + date);
+			Paragraph p = new Paragraph("Today's date: " + date);
 			doc.add(p);
 			//iterate through userActions, printing each on a new line.
 			for (int i = 0; i < userActions.size(); i++) {
@@ -307,6 +310,8 @@ public class Main {
 		while (true) {
 			System.out.println(menuOptions[0]);
 			System.out.println("'en': English");
+			System.out.print("'fr': ");
+			Translator.translatedPrint("French", "fr");
 			System.out.print("'it': ");
 			Translator.translatedPrint("Italian", "it");
 			System.out.print("'es': ");
@@ -323,7 +328,7 @@ public class Main {
 			String input = s.next();
 			s.nextLine();// Capture the \n from user hitting enter
 
-			if(input.compareTo("en") == 0 || input.compareTo("it") == 0 ||
+			if(input.compareTo("en") == 0 || input.compareTo("it") == 0|| input.compareTo("fr") == 0 ||
 					input.compareTo("de") == 0 || input.compareTo("es") == 0)
 			{
 				currentLanguage = input;
