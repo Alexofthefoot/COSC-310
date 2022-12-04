@@ -24,6 +24,14 @@ Remove item function:
 
 This function removes items from the database. At this time it does not first check if the item is currently stored in the database, so there is a potential crash there.
 
+Report Generation function:
+
+CafeKeeper now tracks the user's actions while using it. This function creates a PDF report listing the date and  those user actions. This feature uses the iTextPDF library.
+
+Translate function:
+
+The user is now able to view the menu in multiple languages. This feature uses the Google Translate api.
+
 GUI:
 
 The GUI created in Java Swing, creates a new window with some interaction capability, allowing the user to do actions without having to directly use SQL code.
