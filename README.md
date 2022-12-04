@@ -26,11 +26,11 @@ This function removes items from the database. At this time it does not first ch
 
 Report Generation function:
 
-CafeKeeper now tracks the user's actions while using it. This function creates a PDF report listing the date and  those user actions. This feature uses the iTextPDF library.
+CafeKeeper now tracks the user's actions while using it. This function creates a PDF report listing the date and  those user actions. This feature is useful to the project because the ability to keep track of any changes made would be useful in our cafe scenario for recordkeeping reasons. This feature uses the iTextPDF library.
 
 Translate function:
 
-The user is now able to view the menu in multiple languages. This feature uses the Google Translate api.
+The user is now able to view the menu in four languages, which are English, French, German, and Italian. This feature uses the Google Translate API.
 
 GUI:
 
